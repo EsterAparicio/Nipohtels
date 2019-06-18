@@ -1,0 +1,324 @@
+<?php session_start();
+$db = mysqli_connect("localhost", "root", "", "hoteles") or die("Error connecting to database: ".mysqli_error());
+$errors = array();
+if(isset($_POST['change_pass'])){
+    $oldpass = $_POST['oldpass'];
+    $pass = $_POST['newpass'];
+    $mail = $_SESSION['login_user'];
+    if(empty($oldpass)){
+      array_push($errors, "Actual password is required");
+    }
+
+    if(empty($pass)){
+      array_push($errors, "A new password is required");
+    }
+
+    if($_POST['newpass2'] != $pass){
+      array_push($errors, "The new passwords are not the same");
+    }
+    $oldpass = md5($oldpass);
+
+    $sqlold = "SELECT password FROM usuarios WHERE correo = '$mail'";
+    $queryold = mysqli_query($db, $sqlold) or die(mysqli_error($db));
+    $row = mysqli_fetch_array($queryold);
+
+    if($oldpass != $row[0]){
+      array_push($errors, "Actual password does not match the database");
+    }
+    if(count($errors) == 0){
+      $pass = md5($pass);
+      $sql = "UPDATE usuarios SET password = '$pass' WHERE correo = '$mail'";
+      $query = mysqli_query($db, $sql) or die (mysqli_error($db));
+      echo "Password updated succesfully";
+    }
+  }
+  ?>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Change password - Nipohtels</title>
+    <meta name="description" content="Free Bootstrap Theme by uicookies.com">
+    <meta name="keywords" content="free website templates, free bootstrap themes, free template, free bootstrap, free website template">
+    
+    <link rel="stylesheet" href="css/custom.css">
+    <link href="https://fonts.googleapis.com/css?family=Crimson+Text:300,400,700|Rubik:300,400,700,900" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles-merged.css">
+    <link rel="stylesheet" href="css/style.min.css">
+
+    <!--[if lt IE 9]>
+      <script src="js/vendor/html5shiv.min.js"></script>
+      <script src="js/vendor/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+
+  <!-- START: header -->
+
+  <header role="banner" class="probootstrap-header">
+    <!-- <div class="container"> -->
+        <div class="row">
+        <a href="index.php" class="probootstrap-logo visible-xs"><img src="img/logo_sm.png" class="hires" width="120" height="33" alt="Nipohtels logo"></a>
+        
+        <a href="#" class="probootstrap-burger-menu visible-xs"><i>Menu</i></a>
+        <div class="mobile-menu-overlay"></div>
+
+        <nav role="navigation" class="probootstrap-nav hidden-xs">
+
+          <?php if(!isset($_SESSION['login_user'])){ ?>
+          <ul class="probootstrap-main-nav">
+            <li class="active"><a href="index.php">Home</a></li>
+            <li><a href="about.php">About us</a></li>
+            <li class="hidden-xs probootstrap-logo-center"><a href="index.php"><img src="img/logo_md.png" class="hires" width="181" height="50" alt="Nipohtels logo"></a></li>
+            <li><a href="contact.php">Contact</a></li>
+            <li><a href='' data-toggle="modal" data-target="#modalLoginForm">Login</a></li>
+            <li><a href="" data-toggle="modal" data-target="#modalRegisterForm">Register</a>
+          </ul>
+          <?php } ?>
+
+          <?php if(isset($_SESSION['login_user']) && $_SESSION['tipo_usuario'] == '2'){ ?>
+          <ul class="probootstrap-main-nav">
+            <li>Bienvenidx <?php echo $_SESSION['name']?><li>
+            <li class="active"><a href="index.php">Home</a></li>
+            <li><a href="about.php">About us</a></li>
+            <li class="hidden-xs probootstrap-logo-center"><a href="index.php"><img src="img/logo_md.png" class="hires" width="181" height="50" alt="Nipohtels logo"></a></li>
+            <li><a href="contact.php">Contact</a></li>
+            <li><a href='userpage.php'>My account</a></li>
+            <li><a href='logout.php'>Log out</a></li>
+          </ul>
+          <?php } ?>
+          <?php if(isset($_SESSION['login_user']) && $_SESSION['tipo_usuario'] == '1'){ ?>
+          <ul class="probootstrap-main-nav">
+            <li>Bienvenidx <?php echo $_SESSION['name']?><li>
+            <li class="active"><a href="index.php">Home</a></li>
+            <li><a href="about.php">About us</a></li>
+            <li class="hidden-xs probootstrap-logo-center"><a href="index.php"><img src="img/logo_md.png" class="hires" width="181" height="50" alt="Nipohtels logo"></a></li>
+            <li><a href="contact.php">Contact</a></li>
+            <li><a href='adminindex.php'>Admin Tools</a></li>
+            <li><a href='logout.php'>Log out</a></li>
+          </ul>
+          <?php } ?>
+
+            <div class="extra-text visible-xs">
+            <a href="#" class="probootstrap-burger-menu"><i>Menu</i></a>
+            <h5>Connect With Us</h5>
+            <ul class="social-buttons">
+              <li><a href="#"><i class="icon-twitter"></i></a></li>
+              <li><a href="#"><i class="icon-facebook2"></i></a></li>
+              <li><a href="#"><i class="icon-instagram2"></i></a></li>
+            </ul>
+
+          </div>
+        </nav>
+        </div>
+    <!-- </div> -->
+  </header>
+  <!-- END: header -->
+
+  <section class="probootstrap-slider flexslider probootstrap-inner">
+    <ul class="slides">
+       <li style="background-image: url(img/slider_4.jpg);" class="overlay">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-10 col-md-offset-1">
+                <div class="probootstrap-slider-text text-center">
+                  <p><img src="img/curve_white.svg" class="seperator probootstrap-animate" alt="Free HTML5 Bootstrap Template"></p>
+                  <h1 class="probootstrap-heading probootstrap-animate">Change password</h1>
+                  <div class="probootstrap-animate probootstrap-sub-wrap">We travel not to escape life but for life not to escape us.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+    </ul>
+  </section>
+
+  <section class="probootstrap-section">
+    <div class="form-pass">
+      <form action="changepass.php" method="POST">
+        <?php include 'errors.php'?>
+        Actual password: <input type="password" name="oldpass">
+        New password: <input type="password" name="newpass">
+        Repeat new password: <input type="password" name="newpass2">
+        <button type="submit" name="change_pass" value="Change password" class="btn btn-default">Change password</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="probootstrap-section probootstrap-section-dark">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <h2 class="mt0">Why Choose Us?</h2>
+          <p class="mb50"><img src="img/curve.svg" class="svg" alt="Free HTML5 Bootstrap Template"></p>
+        </div>
+        <div class="col-md-4">
+          <div class="service left-icon left-icon-sm probootstrap-animate">
+            <div class="icon">
+              <i class="icon-check"></i>
+            </div>
+            <div class="text">
+              <h3>1+ Million Hotel Rooms</h3>
+              <p><i>"Chilling out on the bed in your hotel room watching television, while wearing your own pajamas, is sometimes the best part of a vacation."</i></p>
+              <h6>- Laura Marano</h6>
+            </div>  
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="service left-icon left-icon-sm probootstrap-animate">
+            <div class="icon">
+              <i class="icon-check"></i>
+            </div>
+            <div class="text">
+              <h3>Food &amp; Drinks</h3>
+              <p><i>"Food is for eating, and good food is to be enjoyed... I think food is, actually, very beautiful in itself."</i></p>
+              <h6>- Delia Smith</h6>
+            </div>  
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="service left-icon left-icon-sm probootstrap-animate">
+            <div class="icon">
+              <i class="icon-check"></i>
+            </div>
+            <div class="text">
+              <h3>Airport Taxi</h3>
+              <p><i>"I get out of the taxi and it's probably the only city which in reality looks better than on the postcards, New York."</i></p>
+              <h6>- Milos Forman</h6>
+            </div>  
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="probootstrap-section">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2 mb50 text-center probootstrap-animate">
+          <h2 class="mt0">More Features</h2>
+          <p class="mb30"><img src="img/curve.svg" class="svg" alt="Free HTML5 Bootstrap Template"></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4 col-sm-6 col-xs-12 probootstrap-animate">
+          <h3 class="heading-with-icon"><i class="icon-heart2"></i> <span>Our love for you</span></h3>
+          <p><i>"It's not so much that I don't like traveling, it's just that I love being home. I love being able to spend time with my friends."</i></p>
+          <h6>- Andy Roddick</h6>
+        </div>
+        <div class="col-md-4 col-sm-6 col-xs-12 probootstrap-animate">
+          <h3 class="heading-with-icon"><i class="icon-rocket"></i> <span>Wishes for improvement</span></h3>
+          <p><i>"Aim for the moon. If you miss, you may hit a star."</i></p>
+          <h6>- W. Clement Stone</h6>
+        </div>
+        <div class="clearfix visible-sm-block"></div>
+        <div class="col-md-4 col-sm-6 col-xs-12 probootstrap-animate">
+          <h3 class="heading-with-icon"><i class="icon-image"></i> <span>Seeking new inspirations</span></h3>
+          <p><i>"Wherever you look there are inspirations, books, literature, paintings, landscapes, everything. Just living is an inspiration."</i></p>
+          <h6>- Gavin Rossdale</h6>
+        </div>
+        <div class="clearfix visible-lg-block visible-md-block"></div>
+        <div class="col-md-4 col-sm-6 col-xs-12 probootstrap-animate">
+          <h3 class="heading-with-icon"><i class="icon-briefcase"></i> <span>The pleasure of literature</span></h3>
+          <p><i>"The world is a book, and those who do not travel read only a page."</i></p>
+          <h6>- Saint Augustine</h6>
+        </div>
+        <div class="clearfix visible-sm-block"></div>
+        <div class="col-md-4 col-sm-6 col-xs-12 probootstrap-animate">
+          <h3 class="heading-with-icon"><i class="icon-chat"></i> <span>Always sincere</span></h3>
+          <p><i>"A lie can travel half way around the world while the truth is putting on its shoes."</i></p>
+          <h6>- Charles Spurgeon</h6>
+        </div>
+        <div class="col-md-4 col-sm-6 col-xs-12 probootstrap-animate">
+          <h3 class="heading-with-icon"><i class="icon-colours"></i> <span>LGBTQ+</span></h3>
+          <p><i>"Because of my fighting for LGBT rights, I have seen the possibility of change. And that gives me heart to believe that it is possible to effect change."</i></p>
+          <h6>- Sandi Toksvig</h6>
+        </div>
+        <div class="clearfix visible-lg-block visible-md-block visible-sm-block"></div>
+      </div>
+    </div>
+  </section>
+
+<section class="probootstrap-half">
+    <div class="image" style="background-image: url(img/slider_2.jpg);"></div>
+    <div class="text">
+      <div class="probootstrap-animate fadeInUp probootstrap-animated">
+        <h2 class="mt0">Travel</h2>
+        <p><img src="img/curve_white.svg" class="seperator" alt="Free HTML5 Bootstrap Template"></p>
+        <div class="row">
+          <div class="col-md-6">
+            <p>I should like to rise and go where the golden apples grow;   
+            Where below another sky parrot islands anchored lie, and, watched by cockatoos and goats, Lonely Crusoes building boats;
+            Where in sunshine reaching out eastern cities, miles about, are with mosque and minaret among sandy gardens set, and the rich goods from near and far hang for sale in the bazaar;   
+            Where the Great Wall round China goes, and on one side the desert blows, and with bell and voice and drum cities on the other hum;   
+            Where are forests, hot as fire, wide as England, tall as a spire, full of apes and cocoa-nuts and the negro hunters’ huts;
+            </p>
+          </div>
+          <div class="col-md-6">
+            <p>Where the knotty crocodile lies and blinks in the Nile, and the red flamingo flies hunting fish before his eyes;   
+              Where in jungles, near and far, man-devouring tigers are, lying close and giving ear lest the hunt be drawing near, or a comer-by be seen swinging in a palanquin;
+              Where among the desert sands some deserted city stands, all its children, sweep and prince, grown to manhood ages since, not a foot in street or house, not a stir of child or mouse, and when kindly falls the night, in all the town no spark of light.   
+              There I’ll come when I’m a man with a camel caravan;
+              Light a fire in the gloom of some dusty dining-room;   
+              See the pictures on the walls, heroes, fights and festivals;   
+              And in a corner find the toys of the old Egyptian boys.
+              </p>    
+          </div>
+        </div>
+        <h6><i>- Robert Louis Stevenson</i></h6>
+      </div>
+    </div>
+  </section>
+
+  <!-- START: footer -->
+  <footer role="contentinfo" class="probootstrap-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="probootstrap-footer-widget">
+            <p class="mt40"><img src="img/logo_sm.png" class="hires" width="120" height="33" alt="Free HTML5 Bootstrap Template by uicookies.com"></p>
+            <p>A weekend in the heavenly' bed makes it easier to come back to earth. Or so they say. We, on the contrary, think that a weekend in any of our beds will make it almost impossible to go back to normal life. But, who are we to judge? That's something only you can do.</p>
+            <p><a href="about.php" class="link-with-icon">Learn More <i class=" icon-chevron-right"></i></a></p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="probootstrap-footer-widget">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="probootstrap-footer-widget">
+            <h3>Contact</h3>
+            <ul class="probootstrap-contact-info">
+              <li><i class="icon-location2"></i> <span>198 West 21th Street, Suite 721 New York NY 10016</span></li>
+              <li><i class="icon-mail"></i><span>administradornipohtels@gmail.com</span></li>
+              <li><i class="icon-phone2"></i><span>+123 456 7890</span></li>
+            </ul>
+            
+          </div>
+        </div>
+      </div>
+      <div class="row mt40">
+        <div class="col-md-12 text-center">
+          <ul class="probootstrap-footer-social">
+            <li><a href=""><i class="icon-twitter"></i></a></li>
+            <li><a href=""><i class="icon-facebook"></i></a></li>
+            <li><a href=""><i class="icon-instagram2"></i></a></li>
+          </ul>
+          <p>
+            <small>&copy; 2019 Ester Aparicio Rivero. All Rights Reserved. <br> Designed &amp; Developed by Ester Aparicio Rivero</small>
+          </p>
+          
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- END: footer -->
+  
+ 
+  <script src="js/scripts.min.js"></script>
+  <script src="js/main.min.js"></script>
+  <script src="js/custom.js"></script>
+
+  </body>
+</html>

@@ -1,0 +1,72 @@
+/* Your custom css code goes here */
+.search-div {
+	display: inline;
+}
+
+.col-md-12 {
+	padding-left: 20px;
+}
+
+/*Tabla de "My account"*/
+.user-table {
+	border: 1px solid #a50d0d;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+}
+
+.user-table tr, td {
+	border: 1px dotted #a50d0d;
+	padding: 50px;
+}
+
+.user-table img {
+	width: 100px;
+	height: 100px;
+}
+
+/*Tabla de "See my reservations"*/
+
+.user-table-reservations {
+	border: 1px solid #a50d0d;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+}
+
+.user-table-reservations th {
+	text-align: center;
+}
+
+/* Rate a reservation */
+
+.form-rate {
+	position: relative;
+	left: 640px;
+}
+
+/* Change password*/
+
+.form-pass {
+	position: relative;
+	left: 200px;
+}
+
+/* Admin table */
+
+.admin-table tr th {
+	text-align: center;
+}
+
+/* New admin form */
+#newadmindiv {
+	margin: 300px;
+}
+
+/* Show all reservations */
+
+.showreservation-div {
+	position: absolute;
+	bottom: 300px;
+	left: 1000px;
+}
